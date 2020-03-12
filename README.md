@@ -40,6 +40,7 @@ nextArrow   - if you want to have "next" button for your pagination
             - THIS IS NOT TESTED YET
 
 filters     - array of filter objects
+
             filter item parameters
             {
                 property - [array/string] post object property you want to filter

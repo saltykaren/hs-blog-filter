@@ -1,8 +1,33 @@
 # hs-blog-filter
 
-OPTIONS parameters
+## How to use
 
-## posts  
+    (function() {
+        var $list = $("#blog_listing"),
+          filter = saltyBlogFilter({
+            posts: $list.data("posts"),
+            postLength: 12,
+            $handlebars: $("#post_hb_template"),
+            $list: $list,
+            $loadmore: $("#blog_listing_action"),
+            filters: [
+              {
+                property: "tags",
+                urlParam: "tag",
+                type: "dropdown",
+                defaultText: "All articles",
+                wrapper: $("#blog_listing_filters")
+              }
+            ]
+          });
+
+        filter.init();
+      })();
+
+## Options
+
+### posts
+
 array of objects to be filtered or sort
 
 Sample "posts" item value
@@ -18,57 +43,67 @@ Sample "posts" item value
         ]
         posturl: "http://www.psohub.com/837636534-test-9866-blog/why-time-tracking-in-excel-costs-money-5"
     }
+
 This is just a sample object. These properties can be different.
 
 NOTE: if you want to filter a certain property they will need to have a "label" and a "value" just like the "tags" property in the example
 
-## postLength 
+### postLength
+
 - posts to show per page
 - defaults to show all posts
 
-## $handlebars 
+### \$handlebars
+
 - a jQuery DOM object for your handlebar template
 
-## $list       
+### \$list
+
 - a jQuery DOM object
 - wrapper for your list
 
-## $loadmore   
+### \$loadmore
+
 - wrapper for your loadmore button. The action element needs to have a class of "page-more"
 
-## $pagination 
+### \$pagination
+
 - wrapper for the pagination
 - THIS IS NOT TESTED YET
-            
-## prevArrow   
+
+### prevArrow
+
 - if you want to have "previous" button for your pagination
 - THIS IS NOT TESTED YET
-            
-## nextArrow   
+
+### nextArrow
+
 - if you want to have "next" button for your pagination
 - THIS IS NOT TESTED YET
 
-## filters     
+### filters
+
 - array of filter objects
 
   filter item parameters
 
-    {
-        property - [array/string] post object property you want to filter
-        urlParam - a url parameter key you want to use when this filter has value
-        type - ["dropdown", "keyword", "toggle"]
-        defaultText - the label for this filter
-        wrapper - jQuery DOM object that will contain the different possible filters
-    }
+  { property - [array/string] post object property you want to filter urlParam - a url parameter key you want to use when this filter has value type -
+  ["dropdown", "keyword", "toggle"] defaultText - the label for this filter wrapper - jQuery DOM object that will contain the different possible
+  filters }
 
   NOTE: when using "keyword" the input element needs to have a class of 'keyword-search'
 
-## sorts       
--  COMING SOON.
+### sorts
 
-## onAfterItemsLoaded  
+- COMING SOON.
+
+### onAfterItemsLoaded
+
 - callback every time a page is loaded
 
-## onAfterInit         
+### onAfterInit
+
 - callback after initializing
 
+
+## NOTE: open sample/index.html to see a sample

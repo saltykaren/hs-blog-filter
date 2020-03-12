@@ -106,4 +106,4 @@ NOTE: if you want to filter a certain property they will need to have a "label" 
 - callback after initializing
 
 
-## NOTE: open sample/index.html to see a sample
+## NOTE: open sample/index.html to see a sample 

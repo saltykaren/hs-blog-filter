@@ -92,7 +92,7 @@ NOTE: if you want to filter a certain property they will need to have a "label" 
             urlParam: a url parameter key you want to use when this filter has value, 
             type: ["dropdown", "keyword", "toggle"], 
             defaultText: the label for this filter, 
-            wrapperL jQuery DOM object that will contain the different possible filters 
+            wrapper: jQuery DOM object that will contain the different possible filters 
         }
 
   NOTE: when using "keyword" the input element needs to have a class of 'keyword-search'

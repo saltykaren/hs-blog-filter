@@ -120,6 +120,8 @@ function saltyBlogFilter(options) {
           sortItem.defaultText = "All";
         }
 
+        sortItem.type = "dropdown";
+
         sortItem.wrapper = $(sortItem.wrapper);
 
         acc.push(sortItem);
@@ -401,7 +403,7 @@ function saltyBlogFilter(options) {
     }
 
     function handlePostLoop(post1, post2) {
-      var property = sort.value,
+      var property = sortItem.value,
         k1 = getPostProperty(post1, property),
         k2 = getPostProperty(post2, property);
 
@@ -431,11 +433,11 @@ function saltyBlogFilter(options) {
       }
     }
 
-    sorts.forEach(function(sortItem) {
+    /* sorts.forEach(function(sortItem) {
       if (sortItem.value) {
         filteredPosts.sort(handlePostLoop);
       }
-    });
+    }); */
   };
 
   /*======================================*/
@@ -594,9 +596,9 @@ function saltyBlogFilter(options) {
     toggles.forEach(function(item) {
       handleLoop(item, "toggle");
     });
-    sorts.forEach(function(item) {
+    /* sorts.forEach(function(item) {
       handleLoop(item, "dropdown");
-    });
+    }); */
   };
 
   /*======================================*/
@@ -663,7 +665,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   var _init = function() {
     // bind dropdown fields
-    var ddItems = mergeArrays(dropdowns, toggles, sorts),
+    var ddItems = mergeArrays(dropdowns, toggles/* , sorts */),
       ddDOMs = ddItems.map(function(item) {
         return item.wrapper;
       }),

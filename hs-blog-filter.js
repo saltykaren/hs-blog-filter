@@ -710,6 +710,7 @@ function saltyBlogFilter(options) {
               });
             }
 
+
             _selectToggle(
               {
                 wrapper: item.wrapper.find(".toggle-list"),
@@ -717,7 +718,11 @@ function saltyBlogFilter(options) {
               },
               isPushToValue
             );
-            _setUrlParameter(item.urlParam, JSON.stringify(item.value));
+            if(item.value.length === 0) {
+              _setUrlParameter(item.urlParam, '');
+            } else {
+              _setUrlParameter(item.urlParam, JSON.stringify(item.value));
+            }
           }
         }
       ];

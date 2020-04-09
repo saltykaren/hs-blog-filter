@@ -44,32 +44,32 @@ function saltyBlogFilter(options) {
       filters: [],
       sorts: [],
       onAfterItemsLoaded: null,
-      onAfterInit: null
+      onAfterInit: null,
     },
     settings = $.extend({}, defaults, options),
     filters = [],
     sorts = [],
     filteredPosts = [],
-    debounce = function(callback, ms) {
+    debounce = function (callback, ms) {
       var timer = 0;
-      return function() {
+      return function () {
         var context = this,
           args = arguments;
 
         clearTimeout(timer);
-        timer = setTimeout(function() {
+        timer = setTimeout(function () {
           callback.apply(context, args);
         }, ms || 0);
       };
     },
-    mergeArrays = function() {
+    mergeArrays = function () {
       var mergedArray = [];
 
       for (var len = arguments.length, arrays = new Array(len), key = 0; key < len; key++) {
         arrays[key] = arguments[key];
       }
 
-      arrays.forEach(function(array) {
+      arrays.forEach(function (array) {
         mergedArray = [].concat(mergedArray, array);
       });
       return Array.from(new Set(mergedArray));
@@ -81,7 +81,7 @@ function saltyBlogFilter(options) {
 
   // initialize filters array
   if (settings.filters.length) {
-    filters = settings.filters.reduce(function(acc, filterItem) {
+    filters = settings.filters.reduce(function (acc, filterItem) {
       // Check if filterItem is valid
       if (filterItem.wrapper && filterItem.property) {
         // initialize "value"
@@ -109,7 +109,7 @@ function saltyBlogFilter(options) {
 
   // initialize sorts array
   if (settings.sorts.length) {
-    sorts = settings.sorts.reduce(function(acc, sortItem) {
+    sorts = settings.sorts.reduce(function (acc, sortItem) {
       // check if sortItem is valid
       if (sortItem.wrapper && sortItem.options) {
         // initialize "value"
@@ -131,20 +131,20 @@ function saltyBlogFilter(options) {
     }, []);
   }
 
-  var dropdowns = filters.filter(function(item) {
+  var dropdowns = filters.filter(function (item) {
       return item.type === "dropdown";
     }),
-    keywords = filters.filter(function(item) {
+    keywords = filters.filter(function (item) {
       return item.type === "keyword";
     }),
-    toggles = filters.filter(function(item) {
+    toggles = filters.filter(function (item) {
       return item.type === "toggle";
     });
 
   /*======================================*/
   /*============= GET PAGE ===============*/
   /*======================================*/
-  var _getPage = function() {
+  var _getPage = function () {
     var first = (settings.current - 1) * settings.postLength,
       last = settings.current * settings.postLength,
       postsToShow = filteredPosts.slice(first, last),
@@ -177,15 +177,15 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*========== SET PAGINATION ============*/
   /*======================================*/
-  var _setPagination = function() {
+  var _setPagination = function () {
     if (settings.$pagination && filteredPosts.length) {
       var pages = Math.ceil(filteredPosts.length / settings.postLength),
         current = parseInt(settings.current),
         left = current - 2,
         right = pages;
 
-      function navAppend(value, label, wrapper) {
-        var item = ["<li>", '<a href="javascript:void(0);" data-page="' + value + '">', value, "</a>", "</li>"].join("");
+      function navAppend(value, label, wrapper, customClass) {
+        var item = ["<li>", '<a href="javascript:void(0);" class="' + customClass + '" data-page="' + value + '">', label, "</a>", "</li>"].join("");
 
         item = $(item);
 
@@ -217,34 +217,23 @@ function saltyBlogFilter(options) {
 
       settings.$pagination.html("");
 
-      if (settings.prevArrow && left > 1) {
-        var $prev = $(settings.prevArrow);
-        $prev.data("page", "-1");
-        $next.addClass("page-prev");
-        settings.$pagination.append($prev);
+      if (settings.prevArrow) {
+        navAppend("-1", settings.prevArrow, settings.$pagination, "page-prev");
+        if (current === 1) {
+          settings.$pagination.find(".page-prev").addClass("page-disabled");
+        }
       }
 
       // load pagination
       for (var i = left; i <= right; i++) {
-        if (left > 2 && i === left) {
-          navAppend(1, 1, settings.$pagination);
-          // navAppend(left - 1, "...", settings.$pagination);
-        }
-
-        if (right < pages && i === right) {
-          // navAppend(right, "...", settings.$pagination);
-          navAppend(pages, pages, settings.$pagination);
-          continue;
-        }
-
         navAppend(i, i, settings.$pagination);
       }
 
-      if (settings.nextArrow && right < pages) {
-        var $next = $(settings.nextArrow);
-        $next.data("page", "+1");
-        $next.addClass("page-next");
-        settings.$pagination.append($next);
+      if (settings.nextArrow) {
+        navAppend("+1", settings.nextArrow, settings.$pagination, "page-next");
+        if (current === pages) {
+          settings.$pagination.find(".page-next").addClass("page-disabled");
+        }
       }
     }
   };
@@ -252,7 +241,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*========= GET URL PARAMETER ==========*/
   /*======================================*/
-  var _getUrlParameter = function(parameter) {
+  var _getUrlParameter = function (parameter) {
     parameter = parameter.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
     var url = document.location.href;
     var regex = new RegExp("[\\?|&]" + parameter.toLowerCase() + "=([^&#]*)");
@@ -263,7 +252,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*========= SET URL PARAMETER ==========*/
   /*======================================*/
-  var _setUrlParameter = function(key, value) {
+  var _setUrlParameter = function (key, value) {
     var key = encodeURIComponent(key),
       value = encodeURIComponent(value),
       url = document.location.href;
@@ -303,7 +292,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*============ FILTER POSTS ============*/
   /*======================================*/
-  var _filterPosts = function() {
+  var _filterPosts = function () {
     // check value by filter type
     function checkValByType(postProp, tofilter, type) {
       var isEqual = false;
@@ -326,7 +315,7 @@ function saltyBlogFilter(options) {
     // Check property value
     function isPropInvalid(postProp, toFilter, type) {
       if (Array.isArray(postProp)) {
-        var found = postProp.filter(function(item) {
+        var found = postProp.filter(function (item) {
           return checkValByType(item, toFilter, type);
         });
 
@@ -340,10 +329,10 @@ function saltyBlogFilter(options) {
     function handlePostLoop(acc, _post) {
       var invalidArr = [];
       // loop through filters
-      filters.forEach(function(filterItem) {
+      filters.forEach(function (filterItem) {
         if (filterItem.value) {
           if (Array.isArray(filterItem.property)) {
-            var found = filterItem.property.filter(function(property) {
+            var found = filterItem.property.filter(function (property) {
               if (_post[property]) {
                 return !isPropInvalid(_post[property], filterItem.value, filterItem.type);
               } else {
@@ -358,13 +347,13 @@ function saltyBlogFilter(options) {
             if (isPropInvalid(_post[filterItem.property], filterItem.value, filterItem.type)) {
               invalidArr.push({
                 property: filterItem.property,
-                value: _post[filterItem.property]
+                value: _post[filterItem.property],
               });
             }
           } else {
             invalidArr.push({
               property: filterItem.property,
-              value: ""
+              value: "",
             });
           }
         }
@@ -383,7 +372,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*============= SORT POSTS =============*/
   /*======================================*/
-  var _sortPosts = function() {
+  var _sortPosts = function () {
     function getPostProperty(post, property) {
       var value = false;
 
@@ -443,9 +432,9 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*=========== SET FILTER DOM ===========*/
   /*======================================*/
-  var _setDOMFilters = function() {
+  var _setDOMFilters = function () {
     function findItemByProp(item, list, prop) {
-      return list.find(function(k) {
+      return list.find(function (k) {
         return k[prop] === item[prop];
       });
     }
@@ -455,7 +444,7 @@ function saltyBlogFilter(options) {
     function pushToList(value, list) {
       var _list = [];
       if (Array.isArray(value)) {
-        var unique = value.filter(function(item) {
+        var unique = value.filter(function (item) {
           var found = findItemByProp(item, list, "value");
           return !found;
         });
@@ -473,7 +462,7 @@ function saltyBlogFilter(options) {
     // list => list of dropdown items
     function createDropdown(item, list) {
       var $ddlist = item.wrapper.find(".dropdown-list").eq(0),
-        template = function(value, label, isActive) {
+        template = function (value, label, isActive) {
           var classActive = isActive ? "is-active" : "",
             d = ["<li>", '<a href="javascript:void(0);" class="' + classActive + '" data-value="' + value + '">', label, "</a>", "</li>"];
           return $(d.join(""));
@@ -491,11 +480,11 @@ function saltyBlogFilter(options) {
           _selectDropdown(
             {
               element: item.wrapper.find(".dropdown-label"),
-              value: _dd.label
+              value: _dd.label,
             },
             {
               wrapper: $ddlist,
-              selected: dom.find("a")
+              selected: dom.find("a"),
             }
           );
         }
@@ -506,7 +495,7 @@ function saltyBlogFilter(options) {
     // list => list of dropdown items
     function createToggle(item, list) {
       var $toggleList = item.wrapper.find(".toggle-list").eq(0),
-        template = function(value, label, isActive) {
+        template = function (value, label, isActive) {
           var classActive = isActive ? "is-active" : "",
             d = [
               "<li>",
@@ -514,7 +503,7 @@ function saltyBlogFilter(options) {
               '<span class="toggle-checkbox"></span>',
               label,
               "</a>",
-              "</li>"
+              "</li>",
             ];
 
           return $(d.join(""));
@@ -530,7 +519,7 @@ function saltyBlogFilter(options) {
           _selectToggle(
             {
               wrapper: $toggleList,
-              selected: dom.find("a")
+              selected: dom.find("a"),
             },
             true
           );
@@ -542,7 +531,7 @@ function saltyBlogFilter(options) {
     function handleLoop(list, type) {
       var itemList = [],
         properties = Array.isArray(list.property) ? list.property : [list.property],
-        values = settings.posts.reduce(function(acc, item, idx) {
+        values = settings.posts.reduce(function (acc, item, idx) {
           var _props = Object.keys(item);
 
           for (var key = 0; key < _props.length; key++) {
@@ -554,11 +543,11 @@ function saltyBlogFilter(options) {
           return acc;
         }, []);
 
-      values.forEach(function(item) {
+      values.forEach(function (item) {
         itemList = pushToList(item, itemList);
       });
 
-      itemList.sort(function(val1, val2) {
+      itemList.sort(function (val1, val2) {
         var v1 = val1.label.toLowerCase(),
           v2 = val2.label.toLowerCase(),
           comparison = 0;
@@ -590,10 +579,10 @@ function saltyBlogFilter(options) {
       }
     }
 
-    dropdowns.forEach(function(item) {
+    dropdowns.forEach(function (item) {
       handleLoop(item, "dropdown");
     });
-    toggles.forEach(function(item) {
+    toggles.forEach(function (item) {
       handleLoop(item, "toggle");
     });
     /* sorts.forEach(function(item) {
@@ -604,14 +593,14 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*======== SELECT DROPDOWN ITEM ========*/
   /*======================================*/
-  var _selectDropdown = function(label, anchor) {
+  var _selectDropdown = function (label, anchor) {
     var defLabel = {
         element: "",
-        value: ""
+        value: "",
       },
       defAnchor = {
         wrapper: "",
-        selected: ""
+        selected: "",
       },
       _label = $.extend({}, defLabel, label),
       _anchor = $.extend({}, defAnchor, anchor);
@@ -630,10 +619,10 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*========= SELECT TOGGLE ITEM =========*/
   /*======================================*/
-  var _selectToggle = function(anchor, isSelected) {
+  var _selectToggle = function (anchor, isSelected) {
     var defAnchor = {
         wrapper: "",
-        selected: ""
+        selected: "",
       },
       _anchor = $.extend({}, defAnchor, anchor);
 
@@ -649,7 +638,7 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*=============== RESET ================*/
   /*======================================*/
-  var _reset = function() {
+  var _reset = function () {
     if (_getUrlParameter("page")) {
       _setUrlParameter("page", settings.current);
     }
@@ -663,10 +652,10 @@ function saltyBlogFilter(options) {
   /*======================================*/
   /*============ INITIALIZE ==============*/
   /*======================================*/
-  var _init = function() {
+  var _init = function () {
     // bind dropdown fields
-    var ddItems = mergeArrays(dropdowns, toggles/* , sorts */),
-      ddDOMs = ddItems.map(function(item) {
+    var ddItems = mergeArrays(dropdowns, toggles /* , sorts */),
+      ddDOMs = ddItems.map(function (item) {
         return item.wrapper;
       }),
       // Array for the different filter
@@ -674,7 +663,7 @@ function saltyBlogFilter(options) {
       dropdownFunctionArray = [
         {
           type: "dropdown",
-          do: function(item, _this, value, label) {
+          do: function (item, _this, value, label) {
             item.value = value || "";
 
             if (!item.value) {
@@ -684,19 +673,19 @@ function saltyBlogFilter(options) {
             _selectDropdown(
               {
                 element: item.wrapper.find(".dropdown-label"),
-                value: label
+                value: label,
               },
               {
                 wrapper: item.wrapper.find(".dropdown-list"),
-                selected: _this
+                selected: _this,
               }
             );
             _setUrlParameter(item.urlParam, item.value);
-          }
+          },
         },
         {
           type: "toggle",
-          do: function(item, _this, value, label) {
+          do: function (item, _this, value, label) {
             if (!Array.isArray(item.value)) {
               item.value = [];
             }
@@ -705,38 +694,37 @@ function saltyBlogFilter(options) {
             if (value && isPushToValue) {
               item.value.push(value);
             } else {
-              item.value = item.value.filter(function(i) {
+              item.value = item.value.filter(function (i) {
                 return i !== value;
               });
             }
 
-
             _selectToggle(
               {
                 wrapper: item.wrapper.find(".toggle-list"),
-                selected: _this
+                selected: _this,
               },
               isPushToValue
             );
-            if(item.value.length === 0) {
-              _setUrlParameter(item.urlParam, '');
+            if (item.value.length === 0) {
+              _setUrlParameter(item.urlParam, "");
             } else {
               _setUrlParameter(item.urlParam, JSON.stringify(item.value));
             }
-          }
-        }
+          },
+        },
       ];
 
-    ddItems.forEach(function(dd) {
-      dd.wrapper.on("click", ".dropdown-label, .toggle-label", function(e) {
+    ddItems.forEach(function (dd) {
+      dd.wrapper.on("click", ".dropdown-label, .toggle-label", function (e) {
         dd.wrapper.toggleClass("is-open");
       });
 
-      var selectedDFA = dropdownFunctionArray.find(function(item) {
+      var selectedDFA = dropdownFunctionArray.find(function (item) {
         return dd.type === item.type;
       });
 
-      dd.wrapper.on("click", "." + selectedDFA.type + "-list a", function(e) {
+      dd.wrapper.on("click", "." + selectedDFA.type + "-list a", function (e) {
         event.preventDefault();
         var _this = $(this),
           value = _this.data("value"),
@@ -759,8 +747,8 @@ function saltyBlogFilter(options) {
         }
       }
     });
-    $(window).on("click", function(event) {
-      ddDOMs.forEach(function(item) {
+    $(window).on("click", function (event) {
+      ddDOMs.forEach(function (item) {
         if (item[0] !== event.target && !item[0].contains(event.target) && item.hasClass("is-open")) {
           item.removeClass("is-open");
         }
@@ -768,11 +756,11 @@ function saltyBlogFilter(options) {
     });
 
     // bind search fields
-    keywords.forEach(function(item) {
+    keywords.forEach(function (item) {
       item.wrapper.on(
         "keyup search",
         ".keyword-search",
-        debounce(function(e) {
+        debounce(function (e) {
           item.value = this.value || "";
           _setUrlParameter(item.urlParam, item.value);
           settings.current = 1;
@@ -789,8 +777,12 @@ function saltyBlogFilter(options) {
 
     // bind pagination items
     if (settings.$pagination) {
-      settings.$pagination.on("click", "a, .page-prev, .page-next", function(e) {
-        var value = $(this).data("page");
+      settings.$pagination.on("click", "a, .page-prev, .page-next", function (e) {
+        e.preventDefault();
+        if ($(this).hasClass("page-disabled")) {
+          return false;
+        }
+        var value = $(this).data("page").toString();
         switch (value) {
           case "-1":
             settings.current = settings.current - 1;
@@ -811,7 +803,7 @@ function saltyBlogFilter(options) {
 
     // bind loadmore item
     if (settings.$loadmore) {
-      settings.$loadmore.on("click", ".page-more", function(e) {
+      settings.$loadmore.on("click", ".page-more", function (e) {
         e.preventDefault();
         settings.current = settings.current + 1;
         _getPage();
@@ -829,6 +821,6 @@ function saltyBlogFilter(options) {
   };
 
   return {
-    init: _init
+    init: _init,
   };
 }

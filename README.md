@@ -10,6 +10,8 @@
             $handlebars: $("#post_hb_template"),
             $list: $list,
             $loadmore: $("#blog_listing_action"),
+            prevArrow: "",
+            nextArrow: ""
             filters: [
               {
                 property: "tags",
@@ -96,6 +98,10 @@ NOTE: if you want to filter a certain property they will need to have a "label" 
         }
 
   NOTE: when using "keyword" the input element needs to have a class of 'keyword-search'
+
+  a "is-open" class will be added to the filter wrapper when dropdown is open
+  
+  a "is-active" class will be added to the selected dropdown item
 
 ### sorts
 

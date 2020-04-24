@@ -302,7 +302,7 @@ function saltyBlogFilter(options) {
           isEqual = postProp.value.toLowerCase() === tofilter.toLowerCase();
           break;
         case "keyword":
-          isEqual = new RegExp(tofilter).test(postProp.value);
+          isEqual = new RegExp(tofilter.toLowerCase()).test(postProp.toLowerCase());
           break;
         case "toggle":
           isEqual = tofilter.length === 0 || tofilter.includes(postProp.value);

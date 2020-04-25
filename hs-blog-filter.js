@@ -302,7 +302,11 @@ function saltyBlogFilter(options) {
           isEqual = postProp.value.toLowerCase() === tofilter.toLowerCase();
           break;
         case "keyword":
-          isEqual = new RegExp(tofilter.toLowerCase()).test(postProp.toLowerCase());
+          if (typeof postProp === "object") {
+            isEqual = new RegExp(tofilter.toLowerCase()).test(postProp.value.toLowerCase());
+          } else {
+            isEqual = new RegExp(tofilter.toLowerCase()).test(postProp.toLowerCase());
+          }
           break;
         case "toggle":
           isEqual = tofilter.length === 0 || tofilter.includes(postProp.value);
@@ -423,10 +427,10 @@ function saltyBlogFilter(options) {
     }
 
     /* sorts.forEach(function(sortItem) {
-      if (sortItem.value) {
-        filteredPosts.sort(handlePostLoop);
-      }
-    }); */
+    if (sortItem.value) {
+      filteredPosts.sort(handlePostLoop);
+    }
+  }); */
   };
 
   /*======================================*/
@@ -586,8 +590,8 @@ function saltyBlogFilter(options) {
       handleLoop(item, "toggle");
     });
     /* sorts.forEach(function(item) {
-      handleLoop(item, "dropdown");
-    }); */
+    handleLoop(item, "dropdown");
+  }); */
   };
 
   /*======================================*/

@@ -329,7 +329,11 @@ function saltyBlogFilter(options) {
                     return checkValByType(item, toFilter, type);
                 });
 
-                return found.length === 0;
+                if(Array.isArray(toFilter)) {
+                  return toFilter.length !== 0 && found.length === 0;
+                } else {
+                  return found.length === 0;
+                }
             } else {
                 var check = checkValByType(postProp, toFilter, type);
                 return !check;
